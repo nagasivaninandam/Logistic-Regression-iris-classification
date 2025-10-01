@@ -1,0 +1,43 @@
+# Import necessary libraries
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Step 1: Load the Iris dataset
+iris = load_iris()
+X = iris.data  # Feature matrix
+y = iris.target  # Target vector
+
+# For simplicity, let's do binary classification: classify if species is Setosa (0) or not (1)
+y = np.where(y == 0, 0, 1)
+
+# Step 2: Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Step 3: Feature scaling (important for many ML models)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 4: Initialize and train the Logistic Regression model
+model = LogisticRegression()
+model.fit(X_train_scaled, y_train)
+
+# Step 5: Make predictions on the test set
+y_pred = model.predict(X_test_scaled)
+
+# Step 6: Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+# Step 7: Print results
+print("Accuracy:", accuracy)
+print("Confusion Matrix:\n", conf_matrix)
+print("Classification Report:\n", class_report)
